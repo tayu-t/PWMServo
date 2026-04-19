@@ -53,7 +53,10 @@ class PWMServo(Actuator):
         print(f"Calculated PWM: {self.pwm}")
         
         self.pwm = self.pwm * (2500-500) + 500  # 0-1の値を500-2500の範囲に変換
-        
+        if(self.pwm < 500):
+            self.pwm = 500
+        elif(self.pwm > 2500):
+            self.pwm = 2500
         print(f"Converted PWM: {self.pwm}")
         self.pi.set_servo_pulsewidth(self.pwmPin, int(self.pwm))  # 中央
                     
