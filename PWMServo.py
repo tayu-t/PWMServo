@@ -42,7 +42,7 @@ class PWMServo(Actuator):
         for weight in self.weight:
             tempU += u[int(weight["index"])] * weight["weight"]
         
-        print(f"Calculated weighted input: {tempU}")
+        #print(f"Calculated weighted input: {tempU}")
         
         # 応答関数に基づいて速度を計算
         if(self.response['type'] == "polynomial"):
@@ -50,14 +50,14 @@ class PWMServo(Actuator):
                 self.pwm += coeff * (tempU ** (self.coefficients.__len__() - 1 - i))
         
         
-        print(f"Calculated PWM: {self.pwm}")
+        #print(f"Calculated PWM: {self.pwm}")
         
         self.pwm = self.pwm * (2500-500) + 500  # 0-1の値を500-2500の範囲に変換
         if(self.pwm < 500):
             self.pwm = 500
         elif(self.pwm > 2500):
             self.pwm = 2500
-        print(f"Converted PWM: {self.pwm}")
+        #print(f"Converted PWM: {self.pwm}")
         self.pi.set_servo_pulsewidth(self.pwmPin, int(self.pwm))  # 中央
                     
 
