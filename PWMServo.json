@@ -8,17 +8,23 @@
         "key": "pwmPin",
         "label": "PWM Pin",
         "default": 21,
-        "mainUI": "input",
-        "detailUI": "stepper",
-        "minRange": 0,
-        "maxRange": 32
+        "mainUI": {
+          "type": "input"
+        },
+        "detailUI": {
+          "type": "stepper"
+        }
       },
       {
         "key": "degReturnIndex",
         "label": "DegReturnIndex\n(1-4,If not used = -1)",
         "default": -1,
-        "mainUI": "input",
-        "detailUI": "stepper"
+        "mainUI": {
+          "type": "input"
+        },
+        "detailUI": {
+          "type": "stepper"
+        }
       }
     ]
 }
