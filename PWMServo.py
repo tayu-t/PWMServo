@@ -20,6 +20,7 @@ class PWMServo(Actuator):
         self.response = response
         self.pwmPin : int = int(param['pwmPin'])
         self.returnDegIndex : int = int(param['degReturnIndex'])
+        self.mode : int = int(param['Mode'])
         self.pwm = 0.0
         if(response['type'] == "polynomial" or response['type'] == "linear"):
             self.coefficients = [float(x) for x in response['coefficient'].split(",")]
@@ -52,14 +53,33 @@ class PWMServo(Actuator):
         
         #print(f"Calculated PWM: {self.pwm}")
         
-        self.pwm = max(min(self.pwm, 1.0), -1.0)  # -1から1の範囲に制限
+        if(self.mode == 0):
+            
+            self.pwm = max(min(self.pwm, 1.0), 0.0)  # 0から1の範囲に制限
+            
+            self.pwm = (self.pwm) * 1000 + 1500  # 0から1の値を1500-2500の範囲に変換
+            if(self.pwm < 1500):
+                self.pwm = 1500
+            elif(self.pwm > 2500):
+                self.pwm = 2500
+            
+            #print(f"Converted PWM: {self.pwm}")
+            self.pi.set_servo_pulsewidth(self.pwmPin, int(self.pwm))  # 中央
+            self.pwm = max(min(self.pwm, 1.0), -1.0)  # -1から1の範囲に制限
+            
+        else:
+           
+            self.pwm = (self.pwm) * 1000 + 1500  # -1から1の値を500-2500の範囲に変換
+            if(self.pwm < 500):
+                self.pwm = 500
+            elif(self.pwm > 2500):
+                self.pwm = 2500
+            
+            #print(f"Converted PWM: {self.pwm}")
+            self.pi.set_servo_pulsewidth(self.pwmPin, int(self.pwm))  # 中央
         
-        self.pwm = (self.pwm) * 1000 + 1500  # -1から1の値を500-2500の範囲に変換
-        if(self.pwm < 500):
-            self.pwm = 500
-        elif(self.pwm > 2500):
-            self.pwm = 2500
         
+        #print(f"Converted PWM: {self.pwm}")
         self.pi.set_servo_pulsewidth(self.pwmPin, int(self.pwm))  # 中央
                     
 
@@ -67,7 +87,9 @@ class PWMServo(Actuator):
         # エンコーダーの値や現在の速度などを取得するコードはここに追加
     
         if(1 <= self.returnDegIndex <= 4):
-            deg = (self.pwm - 500) / (2500 - 500) * 180  # デューティ比から角度を計算（例: 0.5が0度、0.25が-90度、0.75が90度）
+            # PWMの値から角度を計算
+            deg = (self.pwm - 500) / (2500 - 500) * 180  
+            
             return [[self.returnDegIndex, deg]]
         return []
         
