@@ -20,7 +20,10 @@ class PWMServo(Actuator):
         self.response = response
         self.pwmPin : int = int(param['pwmPin'])
         self.returnDegIndex : int = int(param['degReturnIndex'])
-        self.mode : int = int(param['Mode'])
+        if('Mode' not in param):
+            self.mode : int = 0
+        else:
+            self.mode : int = int(param['Mode'])
         self.pwm = 0.0
         if(response['type'] == "polynomial" or response['type'] == "linear"):
             self.coefficients = [float(x) for x in response['coefficient'].split(",")]
