@@ -18,6 +18,7 @@ class PWMServo(Actuator):
         self.param = param
         self.weight = weight
         self.response = response
+    
         self.pwmPin : int = int(param['pwmPin'])
         self.returnDegIndex : int = int(param['degReturnIndex'])
         if('Mode' not in param):
@@ -60,18 +61,18 @@ class PWMServo(Actuator):
             
             self.pwm = max(min(self.pwm, 1.0), 0.0)  # 0から1の範囲に制限
             
-            self.pwm = (self.pwm) * 1000 + 1500  # 0から1の値を1500-2500の範囲に変換
-            if(self.pwm < 1500):
-                self.pwm = 1500
+            self.pwm = (self.pwm) * 2000 + 500  # 0から1の値を500-2500の範囲に変換
+            if(self.pwm < 500):
+                self.pwm = 100
             elif(self.pwm > 2500):
                 self.pwm = 2500
             
             #print(f"Converted PWM: {self.pwm}")
             self.pi.set_servo_pulsewidth(self.pwmPin, int(self.pwm))  # 中央
-            self.pwm = max(min(self.pwm, 1.0), -1.0)  # -1から1の範囲に制限
-            
+       
         else:
-           
+            self.pwm = max(min(self.pwm, 1.0), -1.0)  # -1から1の範囲に制限
+                       
             self.pwm = (self.pwm) * 1000 + 1500  # -1から1の値を500-2500の範囲に変換
             if(self.pwm < 500):
                 self.pwm = 500
